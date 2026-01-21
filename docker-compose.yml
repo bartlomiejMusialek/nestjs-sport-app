@@ -1,0 +1,64 @@
+version: '3.9'
+
+services:
+  api:
+    container_name: docker-nest-js
+    build:
+      context: ./backend
+      dockerfile: backend/Dockerfile
+      target: builder
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      DATABASE_HOST: db
+      DATABASE_PORT: 5432
+      DATABASE_USER: postgres
+      DATABASE_PASSWORD: postgres
+      DATABASE_NAME: mydb
+    volumes:
+      - ./backend/:/app
+      - /app/node_modules
+    command: npm run start:dev
+  frontend:
+    container_name: docker-vue-js
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: builder
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./frontend/:/app
+      - /app/node_modules
+    command: npm run start:dev
+  db:
+    container_name: postgres_db
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: mydb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_container
+    restart: always
+    ports:
+      - "8888:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: user-name@domain-name.com
+      PGADMIN_DEFAULT_PASSWORD: strong-password
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:
+  pgadmin-data:

@@ -1,0 +1,36 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model League {
+  id         Int         @id @default(autoincrement())
+  leagueId   Int         @unique
+  name       String      @db.VarChar(1024)
+  country    String      @db.VarChar(128)
+  logo       String      @db.VarChar(1024)
+  type       String      @db.VarChar(8)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  topScorers TopScorer[]
+}
+
+model TopScorer {
+  id            Int     @id @default(autoincrement())
+  leagueId      Int
+  playerId      Int      @unique
+  playerName    String   @db.VarChar(1024)
+  playerPhoto   String   @db.VarChar(1024)
+  playerCountry String   @db.VarChar(128)
+  teamName      String   @db.VarChar(1024)
+  season        Int
+  goals         Int
+  assists       Int
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  league        League   @relation(fields: [leagueId], references: [leagueId])
+}
