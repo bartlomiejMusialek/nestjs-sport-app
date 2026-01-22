@@ -15,4 +15,3 @@ Application boilerplate for building scalable server-side applications using Nes
 ___
 
 ![docs/phpstorm-php-servers.png](preview.png)
-![./preview.png]
